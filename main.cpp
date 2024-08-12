@@ -28,7 +28,8 @@ void main() {
 
 // Define transformation variables
 glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-float rotationAngle = 0.0f; // in degrees
+float rotationAngleZ = 0.0f; // in degrees for Z
+float rotationAngleY = 0.0f; // in degrees for Y
 float scaleFactor = 6.0f; // Scale factor
 
 std::vector<float> vertices;
@@ -79,10 +80,17 @@ void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
         scaleFactor -= s; // Scale down
 
+    // Z axis
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        rotationAngle += 30.0f; // Rotate counterclockwise
+        rotationAngleZ += 30.0f; // Rotate counterclockwise
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        rotationAngle -= 30.0f; // Rotate clockwise
+        rotationAngleZ -= 30.0f; // Rotate clockwise
+
+    // Y axis
+    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+        rotationAngleY += 30.0f; // Rotate counterclockwise
+    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+        rotationAngleY -= 30.0f; // Rotate clockwise
 }
 
 // Compile a shader and check for errors
@@ -150,7 +158,8 @@ void setupBuffers(GLuint &VAO, GLuint &VBO, GLuint &EBO) {
 void updateTransform(GLuint shaderProgram) {
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, translation);
-    transform = glm::rotate(transform, glm::radians(rotationAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+    transform = glm::rotate(transform, glm::radians(rotationAngleY), glm::vec3(0.0f, 1.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(rotationAngleZ), glm::vec3(0.0f, 0.0f, 1.0f));
     transform = glm::scale(transform, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
 
     GLuint transformLoc = glGetUniformLocation(shaderProgram, "transform");
